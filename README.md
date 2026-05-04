@@ -9,14 +9,14 @@ Write an systemd service which runs continuously collect the data from those fil
 
 > Assumption : The server takes around 30secs to process each log line and store it in the DB. There can be 1000+ services sending data to collector service 
 
-### INPUT FILE FORMAT  
+### File Format
 Each node contains 10 files which are rotated over based on number of log lines each file contains. For example, If the Distributed service was configured to store 10000 log lines then each node will contain 10000 lines over 10 files. When all the file are filled with 1000 lines then the next log line will be written to a new file and the oldest file will be removed.
 Each log line can be of 100MB of zlib compressed binary data. The format of each line of the data is 
 ```
 <TIMESTAMP> <UUID> <BINARY_DATA>
 ```
 
-### Constraint.
+### Constraints
 There are some restrictions impose on the systemd service. You have to add these lines to the systemd service unit file.
 ```
 CPUWeight=100
@@ -36,6 +36,7 @@ You should write a go program that reads from a directory which holds the 10 log
 }
 ]
 ```
-You have to make sure your service is running continuously and monitoring the file changes as well. You also have to take the Constraint into consideration.
+You have to make sure your service is running continuously and monitoring the file changes as well. You also have to take the Constraint into consideration. Keep in mind that there shouldn't be any data loss.
 
 The systemd unit file is already present in the repo. Edit it as per your implementation. (./unitfile)[UNIT FILE]
+
