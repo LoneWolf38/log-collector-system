@@ -3,13 +3,15 @@ package main
 import (
 	"bytes"
 	"compress/zlib"
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"crypto/rand"
+	"math/big"
 	"os"
+	"strings"
 	"time"
 )
-
 
 type QueryProfile struct {
 	QueryID     string            `json:"query_id"`
@@ -43,10 +45,10 @@ type Fragment struct {
 }
 
 type Operator struct {
-	ID        int        `json:"id"`
-	Type      string     `json:"type"`
-	Metrics   Metrics    `json:"metrics"`
-	Children  []Operator `json:"children,omitempty"`
+	ID       int        `json:"id"`
+	Type     string     `json:"type"`
+	Metrics  Metrics    `json:"metrics"`
+	Children []Operator `json:"children,omitempty"`
 }
 
 type Metrics struct {
@@ -58,8 +60,8 @@ type Metrics struct {
 }
 
 type TimelineEvent struct {
-	Event string `json:"event"`
-	TimeMs int   `json:"time_ms"`
+	Event  string `json:"event"`
+	TimeMs int    `json:"time_ms"`
 }
 
 type ResourceUsage struct {
@@ -71,8 +73,16 @@ type ResourceUsage struct {
 
 func generateDummyProfile() QueryProfile {
 	now := time.Now()
+	qid, err := rand.Int(rand.Reader, big.NewInt(10000))
+	if err != nil {
+		panic(err)
+	}
+	rp, err := rand.Int(rand.Reader, big.NewInt(10000000))
+	if err != nil {
+		panic(err)
+	}
 	return QueryProfile{
-		QueryID:   fmt.Sprintf("query-%d", rand.Intn(100000)),
+		QueryID:   fmt.Sprintf("query-%d", qid),
 		User:      "test_user",
 		Database:  "default",
 		State:     "FINISHED",
@@ -83,7 +93,7 @@ func generateDummyProfile() QueryProfile {
 			TotalTimeMs:     2000,
 			PlanningTimeMs:  200,
 			ExecutionTimeMs: 1800,
-			RowsProduced:    rand.Intn(1000000),
+			RowsProduced:    int(rp.Int64()),
 			PeakMemoryMB:    512,
 		},
 
@@ -181,26 +191,41 @@ func compressZlib(data []byte) ([]byte, error) {
 }
 
 func main() {
-
-	profile := generateDummyProfile()
-
-	jsonData, err := json.MarshalIndent(profile, "", "  ")
+	err := os.MkdirAll("input", 0755)
 	if err != nil {
 		panic(err)
 	}
+	for range 10 {
+		log_file_name := fmt.Sprintf("input/ts_log_%d", time.Now().Unix())
+		logs := []string{}
+		for range 100 {
+			profile := generateDummyProfile()
 
-	compressed, err := compressZlib(jsonData)
-	if err != nil {
-		panic(err)
+			jsonData, err := json.MarshalIndent(profile, "", "  ")
+			if err != nil {
+				panic(err)
+			}
+
+			compressed, err := compressZlib(jsonData)
+			if err != nil {
+				panic(err)
+			}
+
+			base64E := base64.StdEncoding.EncodeToString(compressed)
+
+			uuid, err := newUUID()
+			if err != nil {
+				panic(err)
+			}
+			d := fmt.Sprintf("%d\t%s\t%s", time.Now().Unix(), uuid, base64E)
+
+			logs = append(logs, d)
+		}
+		time.Sleep(4 * time.Second)
+		err := os.WriteFile(log_file_name, []byte(strings.Join(logs, "\n")), 0644)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("Generated %s\n", log_file_name)
 	}
-
-	
-	d := fmt.Sprintf("%d\t%s\t%s", time.Now().Unix(), newUUID(), compressed)
-
-	err = os.WriteFile("profile.json.zl", []byte(d), 0644)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Generated profile.json.zlib")
 }

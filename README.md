@@ -1,5 +1,8 @@
 # Platform Interview
 
+> [!NOTE]  
+> To do this exercise, candidate must have docker,podman installed in the system and have `go` installed in the system.
+
 ## Problem Statement
 We want to collect binary log data which are continuously getting dumped to multiple files from a distributed service deployed over multiple nodes. The collected log data should then be served over the wire and to a collector which processes it and stores it in a DB.
 
@@ -10,6 +13,20 @@ Each log line can be of 100MB of zlib compressed binary data. The format of each
 <TIMESTAMP> <UUID> <BINARY_DATA>
 ```
 There is an example input file in the repo present for you to test it out. 
+
+## Input 
+To generate the test input, run 
+```bash
+make generate
+```
+This will generate 10 log files in the input dir.
+
+
+## Solution
+Write the log collector agent which reads the log file and sends the data to the server. To test the whole thing, run the following 
+```bash
+make run-build
+```
 
 ## Expectations
 Write an systemd service which runs continuously collect the data from those files and send the data in a JSON format.
