@@ -1,7 +1,7 @@
 # Platform Interview
 
 > [!NOTE]  
-> To do this exercise, candidate must have docker,podman installed in the system and have `go` installed in the system.
+> To do this exercise, candidate must have docker/podman installed in the system and have `go` installed in the system.
 
 ## Problem Statement
 We want to collect binary log data which are continuously getting dumped to multiple files from a distributed service deployed over multiple nodes. The collected log data should then be served over the wire and to a collector which processes it and stores it in a DB.
