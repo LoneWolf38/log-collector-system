@@ -3,7 +3,6 @@
 > [!NOTE]  
 > To do this exercise, candidate must have docker/podman installed in the system and have `go` installed in the system.
 
-
 ## OBJECTIVE
 Objective of this challenge is to try to build a scalable and a reliable system. The challenge includes an agent which collect logs from a log file and sends the logs data over the wire to a aggregator service which then writes to a DB.
 We want to collect binary log data which are continuously getting dumped to multiple files from a distributed service deployed over multiple nodes. The collected log data should then be served over the wire and to a collector which processes it and stores it in a DB.
@@ -28,12 +27,7 @@ This will generate 10 log files in the input dir.
 
 
 ## CONSTRAINTS
-There are some restrictions impose on the systemd service. You have to add these lines to the systemd service unit file.
-```
-CPUWeight=100
-MemoryMax=1G
-```
-This makes the service run in 1Core and 1GB Memory only. Beyond that the process will be killed with OOM.
+There are some restrictions impose on the service. The collector agent that will be running in each of the node has to be lightweight and resource consumption should be less than 1CPU and 1GB Memory.
 
 
 ## SOLUTION
@@ -48,3 +42,8 @@ You should write a go program that reads from a directory which holds the 10 log
 ]
 ```
 You have to make sure your service is running continuously and monitoring the file changes as well. You also have to take the Constraint into consideration. Keep in mind that there shouldn't be any data loss.
+
+## INSTRUCTIONS
+1. Do a fork of this repo.
+2. Make your changes.
+3. Submit a PR to get reviewed.
