@@ -221,7 +221,7 @@ func main() {
 
 			logs = append(logs, d)
 		}
-		time.Sleep(4 * time.Second)
+		time.Sleep(1 * time.Second)
 		err := os.WriteFile(log_file_name, []byte(strings.Join(logs, "\n")), 0644)
 		if err != nil {
 			panic(err)
