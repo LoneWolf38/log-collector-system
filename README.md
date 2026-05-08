@@ -27,7 +27,7 @@ This will generate 10 log files in the input dir.
 > Assumption : The server takes around 30secs to process each log line and store it in the DB. There can be 1000+ services sending data to collector service 
 
 
-## Constraints
+## CONSTRAINTS
 There are some restrictions impose on the systemd service. You have to add these lines to the systemd service unit file.
 ```
 CPUWeight=100
@@ -36,7 +36,7 @@ MemoryMax=1G
 This makes the service run in 1Core and 1GB Memory only. Beyond that the process will be killed with OOM.
 
 
-## Output
+## SOLUTION
 You should write a go program that reads from a directory which holds the 10 log files and captures the lines and format each part of the log line to a JSON field such as 
 ```json
 [
