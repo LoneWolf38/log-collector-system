@@ -1,5 +1,10 @@
+.PHONY: generate run build
+
 generate:
 	go run generate.go
 
 run:
-	go run app/main.go
+	cd goapp && go run ./cmd/server
+
+build:
+	cd goapp && go build -o bin/server ./cmd/server

@@ -43,6 +43,31 @@ You should write a go program that reads from a directory which holds the 10 log
 ```
 You have to make sure your service is running continuously and monitoring the file changes as well. You also have to take the Constraint into consideration. Keep in mind that there shouldn't be any data loss.
 
+## RUNNING
+
+**1. Generate input files**
+```bash
+make generate
+```
+
+**2. Start the collector**
+```bash
+make run
+```
+
+The collector will watch the `input/` directory, tail all `ts_log_*` files, and POST batches of parsed entries to the aggregator at `http://localhost:9090/ingest` (configurable via `AGGREGATOR_URL`).
+
+**Configuration**
+
+| Env var | Default | Description |
+|---|---|---|
+| `INPUT_DIR` | `input` | Directory to watch |
+| `AGGREGATOR_URL` | `http://localhost:9090/ingest` | Aggregator endpoint |
+| `WORKERS` | `2` | Number of parse workers |
+| `BATCH_SIZE` | `50` | Max entries per POST |
+| `FLUSH_INTERVAL_S` | `5` | Seconds between forced flushes |
+| `BACKUP_PATH` | `backups/restore-template.json` | Crash recovery state file |
+
 ## INSTRUCTIONS
 1. Do a fork of this repo.
 2. Make your changes.
