@@ -1,4 +1,4 @@
-package main
+package test
 
 import (
 	"bytes"
@@ -10,6 +10,7 @@ import (
 	"math/big"
 	"os"
 	"strings"
+	"testing"
 	"time"
 )
 
@@ -190,7 +191,7 @@ func compressZlib(data []byte) ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-func main() {
+func TestGenerate(t *testing.T) {
 	err := os.MkdirAll("input", 0755)
 	if err != nil {
 		panic(err)
@@ -220,6 +221,7 @@ func main() {
 			d := fmt.Sprintf("%d\t%s\t%s", time.Now().Unix(), uuid, base64E)
 
 			logs = append(logs, d)
+			time.Sleep(1*time.Second)
 		}
 		time.Sleep(1 * time.Second)
 		err := os.WriteFile(log_file_name, []byte(strings.Join(logs, "\n")), 0644)
@@ -229,3 +231,5 @@ func main() {
 		fmt.Printf("Generated %s\n", log_file_name)
 	}
 }
+
+func TestKeepGenerating(t *testing.T) {}

@@ -8,12 +8,12 @@ Objective of this challenge is to try to build a scalable and a reliable system.
 We want to collect binary log data which are continuously getting dumped to multiple files from a distributed service deployed over multiple nodes. The collected log data should then be served over the wire and to a collector which processes it and stores it in a DB.
 
 ## LOG FILE FORMAT
-Each node contains 10 files which are rotated over based on number of log lines each file contains. For example, If the Distributed service was configured to store 10000 log lines then each node will contain 10000 lines over 10 files. When all the file are filled with 1000 lines then the next log line will be written to a new file and the oldest file will be removed. Each file name is in this format - ts_log_<timestamp>
+Each node contains 10 files which are rotated over based on number of log lines each file contains. For example, If the Distributed service was configured to store 10000 log lines then each node will contain 10000 lines over 10 files. When all the file are filled with 1000 lines then the next log line will be written to a new file and the oldest file will be removed. Each file name is in this format - ```ts_log_<timestamp>```
 Each log line can be of 100MB of zlib compressed binary data. The format of each line of the data is 
 ```
 <TIMESTAMP> <UUID> <BINARY_DATA>
 ```
-There is an example input file in the repo present for you to test it out. 
+Each filename has the starting timestamp of the log lines. E.g. 
 
 ## GENERATE INPUT 
 To generate the test input, run 

@@ -1,5 +1,5 @@
 generate:
-	go run generate.go
+	go test -v -run TestGenerate
 
 run:
 	go run app/main.go
