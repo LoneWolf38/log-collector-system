@@ -1,0 +1,3 @@
+The log collector is a Go agent that runs on each distributed node. It watches a directory for rotating log files (named ts_log_<timestamp>), tails them continuously, parses each tab-separated line into a JSON entry with id, time, and data fields, and batches those entries to a central aggregator via HTTP POST.
+
+Each file gets its own Batcher and Worker. The Worker tracks its read position as a byte offset and saves it to disk every 2 seconds so the agent can resume from exactly where it left off after a restart. Failed POSTs are retried with exponential backoff to avoid data loss on transient aggregator failures. Backpressure is applied through capped channels between the read, parse, and send stages to keep memory usage bounded.
